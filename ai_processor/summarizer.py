@@ -2,14 +2,14 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Ye function .env file se humari API key securely load karega
+# function securely loads API key from .env file
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 if not api_key:
     raise ValueError("GEMINI_API_KEY is missing! Check your .env file.")
 
-# Gemini AI ko configure karte hain
+# Gemini AI configuring
 genai.configure(api_key=api_key)
 
 model = genai.GenerativeModel('gemini-2.5-flash')
