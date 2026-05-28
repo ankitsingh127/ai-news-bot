@@ -35,7 +35,7 @@ An end-to-end, scalable data pipeline that aggregates the latest Artificial Inte
 If you want to run or test this pipeline locally:
 
 1. **Clone the repository:**
-   `git clone https://github.com/YOUR_USERNAME/ai-news-aggregator.git`
+   `git clone https://github.com/ankitsingh127/ai-news-aggregator.git`
    `cd ai-news-aggregator`
 
 2. **Set up the virtual environment:**
