@@ -1,14 +1,13 @@
 import sqlite3
 
-# This will create a file named 'ai_news.db' in your main project folder
 DB_PATH = "ai_news.db"
 
 def init_db():
-    """Creates the database and the table if they don't exist."""
+    """Creates the database and tables if they don't exist."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # We make 'link' UNIQUE so the database automatically rejects duplicates
+    # Table for Articles (Old one)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS articles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,22 +16,27 @@ def init_db():
             published TEXT
         )
     ''')
+    
+    # NEW Table for Users/Subscribers
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            chat_id TEXT PRIMARY KEY
+        )
+    ''')
+    
     conn.commit()
     conn.close()
 
+# --- ARTICLE FUNCTIONS ---
 def is_duplicate(link: str) -> bool:
-    """Checks if an article link is already in the database."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    
     cursor.execute("SELECT 1 FROM articles WHERE link = ?", (link,))
     result = cursor.fetchone()
-    
     conn.close()
     return result is not None
 
 def insert_article(title: str, link: str, published: str) -> bool:
-    """Inserts a new article. Returns True if successful, False if duplicate."""
     if is_duplicate(link):
         return False
         
@@ -46,31 +50,37 @@ def insert_article(title: str, link: str, published: str) -> bool:
         conn.commit()
         success = True
     except sqlite3.IntegrityError:
-        # Extra safety net in case of a collision
         success = False 
     finally:
         conn.close()
-        
     return success
+
+# --- USER FUNCTIONS (NEW) ---
+def add_user(chat_id: str) -> bool:
+    """Adds a new user to the database. Returns True if new, False if already exists."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("INSERT INTO users (chat_id) VALUES (?)", (str(chat_id),))
+        conn.commit()
+        success = True
+        print(f"New subscriber added: {chat_id}")
+    except sqlite3.IntegrityError:
+        success = False # User is already in the database
+    finally:
+        conn.close()
+    return success
+
+def get_all_users() -> list:
+    """Returns a list of all subscribed chat_IDs."""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute("SELECT chat_id FROM users")
+    users = [row[0] for row in cursor.fetchall()]
+    conn.close()
+    return users
 
 # --- Testing Block ---
 if __name__ == "__main__":
-    print("--- Setting up Database ---")
     init_db()
-    print("Database initialized!")
-    
-    test_title = "Dummy AI Research Paper"
-    test_link = "https://arxiv.org/abs/dummy"
-    test_date = "2026-05-28"
-    
-    print("\n1. Inserting article for the first time:")
-    if insert_article(test_title, test_link, test_date):
-        print("✅ Success! Article added.")
-    else:
-        print("❌ Failed or Duplicate.")
-        
-    print("\n2. Trying to insert the exact same article again:")
-    if insert_article(test_title, test_link, test_date):
-        print("❌ Wait, this shouldn't happen!")
-    else:
-        print("✅ Blocked! Duplicate prevented successfully.")
+    print("Database updated with Users table!")
