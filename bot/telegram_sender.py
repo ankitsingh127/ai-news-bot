@@ -11,7 +11,7 @@ BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 def fetch_new_subscribers():
     """
     Checks Telegram for recent messages to find new users who sent /start.
-    Saves their chat_id to the database.
+    Saves their chat_id to the database and sends a welcome message.
     """
     if not BOT_TOKEN:
         print("Error: Bot token missing in .env file.")
@@ -25,16 +25,24 @@ def fetch_new_subscribers():
         if response.status_code == 200:
             data = response.json()
             
-            # Extract results (messages sent to the bot)
             for result in data.get("result", []):
-                # Ensure the message contains text
                 if "message" in result and "text" in result["message"]:
                     text = result["message"]["text"]
                     chat_id = str(result["message"]["chat"]["id"])
                     
-                    # If the user sent /start, save them to the DB
                     if text == "/start":
-                        add_user(chat_id)
+                        # add_user returns True if the user is new and successfully added
+                        is_new_user = add_user(chat_id)
+                        
+                        if is_new_user:
+                            # Send welcome message to the new subscriber
+                            welcome_text = (
+                                "🎉 **Welcome to the AI/ML News Bot!**\n\n"
+                                "You are successfully enrolled. 🚀\n\n"
+                                "I will automatically send you the top 5 AI and Machine Learning research updates here every morning. Stay tuned!"
+                            )
+                            send_telegram_message(welcome_text, chat_id)
+                            print(f"Sent welcome message to {chat_id}")
         else:
             print(f"Failed to fetch updates: {response.text}")
     except Exception as e:
