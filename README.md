@@ -8,9 +8,13 @@
 
 An end-to-end, scalable data pipeline that aggregates the latest Artificial Intelligence and Machine Learning research, processes the text using Large Language Models (LLMs), and broadcasts structured summaries to multiple subscribers via a Telegram Bot.
 
+## 🤖 Try it Live!
+Want to see the bot in action? **[Click here to start the Telegram Bot](https://t.me/ankit_ai_news_bot)** 🚀
+Just send `/start` to the bot, and you will be automatically enrolled to receive the daily AI/ML news broadcast every morning.
+
 ## 🏗️ System Architecture
 
-1. **Data Ingestion:** Extracts daily XML/RSS feeds from research repositories (e.g., ArXiv).
+1. **Data Ingestion:** Extracts daily XML/RSS feeds from various tech repositories (e.g., Google News, TechCrunch, ArXiv).
 2. **State Management:** Interacts with a SQLite database to maintain a history of processed URLs, ensuring zero duplicate processing.
 3. **Dynamic User Management:** Automatically fetches new bot subscribers via Telegram's `getUpdates` API and registers their Chat IDs into the database.
 4. **AI Processing:** Routes new content to the Google Gemini 2.5 Flash API with a custom system prompt to generate concise, 3-bullet-point technical summaries.
@@ -35,8 +39,8 @@ An end-to-end, scalable data pipeline that aggregates the latest Artificial Inte
 If you want to run or test this pipeline locally:
 
 1. **Clone the repository:**
-   `git clone https://github.com/ankitsingh127/ai-news-aggregator.git`
-   `cd ai-news-aggregator`
+   `git clone https://github.com/ankitsingh127/ai-news-bot.git`
+   `cd ai-news-bot`
 
 2. **Set up the virtual environment:**
    `python -m venv venv`
