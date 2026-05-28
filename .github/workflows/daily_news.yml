@@ -4,7 +4,7 @@ on:
   schedule:
     # 2:30 AM UTC is exactly 8:00 AM IST
     - cron: '30 2 * * *'
-  workflow_dispatch: # Ye button dega taaki tum manually bhi test kar sako
+  workflow_dispatch: # gives button so tht we can do it manually also
 
 jobs:
   run-aggregator:
@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Main Script
         env:
-          # GitHub Secrets se hum apni actual keys securely pass karenge
+          # Passing actual keys securely through GitHub Secrets  
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
