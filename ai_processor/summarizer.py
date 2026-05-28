@@ -40,7 +40,7 @@ def summarize_news(title: str, link: str) -> str:
 if __name__ == "__main__":
     print("--- Testing Gemini AI Summarizer ---")
     
-    # Ek dummy news title de kar test karte hain
+    # testing by giving dummy news title
     test_title = "OpenAI releases new GPT-4o model with real-time audio and vision capabilities"
     test_link = "https://dummy-link.com"
     
